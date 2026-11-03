@@ -1,18 +1,22 @@
 <script lang="ts">
     import { Link } from '@inertiajs/svelte';
-    import { themeStyle } from '@lavertia/ui';
+    import { activeUiKitId, themeStyle } from '@lavertia/ui';
     import '@lavertia/ui/theme.css';
     import LavertiaRenderer from './renderer.svelte';
     import type { LavertiaPayload } from '@lavertia/ui';
 
     let { lavertia }: { lavertia: LavertiaPayload } = $props();
     let navigation = $derived(lavertia.navigation ?? []);
+    let kitId = $derived(activeUiKitId(lavertia.uiKit));
 </script>
 
 <svelte:head>
     <title>{lavertia.title ?? 'Lavertia'}</title>
 </svelte:head>
 
+{#if kitId !== 'default'}
+    <p role="alert" class="mx-auto max-w-xl p-6 text-sm text-rose-700">The UI Kit "{kitId}" is not registered for Lavertia Svelte. Use "default" or install a compatible UI adapter.</p>
+{:else}
 <main lang={lavertia.locale ?? 'en'} dir={lavertia.direction ?? 'ltr'} style={themeStyle(lavertia.theme)} class="lvt-root min-h-[calc(100vh-8rem)] bg-gray-50/70 px-4 py-6 sm:px-6 lg:px-8 dark:bg-gray-950/40">
     <div class="mx-auto flex w-full max-w-[1440px] flex-col gap-6 lg:flex-row">
         {#if lavertia.version === 1 && navigation.length > 0}
@@ -46,3 +50,5 @@
         </div>
     </div>
 </main>
+
+{/if}
